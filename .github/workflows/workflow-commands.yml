@@ -36,3 +36,8 @@ jobs:
     steps:
         - name: fetching secrets
           run: echo "This is the secret ${{secrets.DB_PASS}}"
+  demo-region:
+    runs-on: ubuntu-lates
+    steps:
+      - name: trying variable
+        run : echo "deploying in ${{vars.region}}"
