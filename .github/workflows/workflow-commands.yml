@@ -103,3 +103,9 @@ jobs:
         run: |
           echo "## ✅ Job Completed" >> $GITHUB_STEP_SUMMARY
           echo "- Status: Success" >> $GITHUB_STEP_SUMMARY
+
+  github-context:
+    runs-on: ubuntu-latest
+    steps:
+      - name: printing the user name
+        run: echo "I am ${{github.actor}}"
