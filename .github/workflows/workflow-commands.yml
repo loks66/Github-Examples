@@ -1,43 +1,105 @@
-name: Env Example
+name: Workflow Commands Practice (Jobs Split)
 
-on: push
-
-env:
-  APP_NAME: my-app
-  Name: Laxmikanta
+on:
+  push:
+    branches:
+      - main
 
 jobs:
-  demo:
+
+  # 🟢 JOB 1: ENV (static)
+  env-demo:
+    runs-on: ubuntu-latest
+    env:
+      APP_NAME: my-app
+    steps:
+      - name: Print env
+        run: echo "App is $APP_NAME"
+
+  # 🔵 JOB 2: GITHUB_ENV (dynamic)
+  github-env-demo:
     runs-on: ubuntu-latest
     steps:
-      - name: print the app
-        run: |
-         echo "This is the app $APP_NAME"
-         echo "My name is $Name"
-  demo-githubEnv:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Generate version
+      - name: Set dynamic env
         run: echo "VERSION=$(date +%s)" >> $GITHUB_ENV
 
-      - name: Use version
+      - name: Use env
         run: echo "Version is $VERSION"
-  demo-githubOutput:
+
+  # 🟡 JOB 3: GITHUB_OUTPUT (step → step)
+  output-demo:
     runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.build.outputs.image }}
     steps:
       - name: Set output
-        id: step1
-        run: echo "status=success" >> $GITHUB_OUTPUT
+        id: build
+        run: echo "image=my-app:1.0" >> $GITHUB_OUTPUT
 
       - name: Use output
-        run: echo "Result is ${{ steps.step1.outputs.status }}"
-  secret:
+        run: echo "Image is ${{ steps.build.outputs.image }}"
+
+  # 🟣 JOB 4: JOB OUTPUT (job → job)
+  job-output-consumer:
+    runs-on: ubuntu-latest
+    needs: output-demo
+    steps:
+      - name: Use job output
+        run: |
+          echo "Received image: ${{ needs.output-demo.outputs.image }}"
+
+  # 🟠 JOB 5: GITHUB_PATH
+  path-demo:
     runs-on: ubuntu-latest
     steps:
-        - name: fetching secrets
-          run: echo "This is the secret ${{secrets.DB_PASS}}"
-  demo-region:
+      - name: Create tool
+        run: |
+          mkdir -p /home/runner/tools
+          echo -e '#!/bin/bash\necho Tool Running 🚀' > /home/runner/tools/mytool
+          chmod +x /home/runner/tools/mytool
+
+      - name: Add to PATH
+        run: echo "/home/runner/tools" >> $GITHUB_PATH
+
+      - name: Use tool
+        run: mytool
+
+  # 🔴 JOB 6: Logging Commands
+  logging-demo:
     runs-on: ubuntu-latest
     steps:
-      - name: trying variable
-        run : echo "deploying in ${{vars.region}}"
+      - name: Logs
+        run: |
+          echo "::notice::This is a notice"
+          echo "::warning::This is a warning"
+          echo "::error::This is an error"
+
+  # 🟤 JOB 7: Group Logs
+  group-demo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Group logs
+        run: |
+          echo "::group::My Group"
+          echo "Step 1"
+          echo "Step 2"
+          echo "::endgroup::"
+
+  # ⚫ JOB 8: Masking
+  mask-demo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mask value
+        run: |
+          SECRET="my-secret-value"
+          echo "::add-mask::$SECRET"
+          echo "Secret is $SECRET"
+
+  # ⚪ JOB 9: Job Summary
+  summary-demo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add summary
+        run: |
+          echo "## ✅ Job Completed" >> $GITHUB_STEP_SUMMARY
+          echo "- Status: Success" >> $GITHUB_STEP_SUMMARY
