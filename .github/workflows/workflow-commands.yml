@@ -22,8 +22,12 @@ jobs:
 
       - name: Use version
         run: echo "Version is $VERSION"
-  demo-githubEnv2:
+  demo-githubOutput:
     runs-on: ubuntu-latest
     steps:
-      - name: Use version
-        run: echo "Version is $VERSION"
+      - name: Set output
+        id: step1
+        run: echo "result=success" >> $GITHUB_OUTPUT
+
+      - name: Use output
+        run: echo "Result is ${{ steps.step1.outputs.result }}"
