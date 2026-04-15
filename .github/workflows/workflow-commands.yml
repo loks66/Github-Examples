@@ -10,12 +10,20 @@ jobs:
   demo:
     runs-on: ubuntu-latest
     steps:
-      - name: Print app name
-        run: echo "App is $APP_NAME"
-  demo2:
-    runs-on: ubuntu-latest
-    steps:
       - name: print the app
         run: |
          echo "This is the app $APP_NAME"
          echo "My name is $Name"
+  demo-githubEnv:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate version
+        run: echo "VERSION=$(date +%s)" >> $GITHUB_ENV
+
+      - name: Use version
+        run: echo "Version is $VERSION"
+  demo-githubEnv2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Use version
+        run: echo "Version is $VERSION"
