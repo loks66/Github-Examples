@@ -27,7 +27,7 @@ jobs:
     steps:
       - name: Set output
         id: step1
-        run: echo "result=success" >> $GITHUB_OUTPUT
+        run: echo "status=success" >> $GITHUB_OUTPUT
 
       - name: Use output
         run: echo "Result is ${{ steps.step1.outputs.result }}"
