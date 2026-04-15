@@ -30,4 +30,9 @@ jobs:
         run: echo "status=success" >> $GITHUB_OUTPUT
 
       - name: Use output
-        run: echo "Result is ${{ steps.step1.outputs.result }}"
+        run: echo "Result is ${{ steps.step1.outputs.status }}"
+  secret:
+    runs-on: ubuntu-latest
+    steps:
+        - name: fetching secrets
+          run: echo "This is the secret ${{secrets.DB_PASS}}"
