@@ -1,0 +1,21 @@
+name: Env Example
+
+on: push
+
+env:
+  APP_NAME: my-app
+  Name: Laxmikanta
+
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print app name
+        run: echo "App is $APP_NAME"
+  demo2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: print the app
+        run: |
+         echo "This is the app $APP_NAME"
+         echo "My name is $Name"
